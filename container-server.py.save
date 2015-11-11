@@ -67,8 +67,9 @@ def containers_show(id):
     Inspect specific container
 
     """
-    output = docker("inspect",id)
-    resp = output
+
+    output = docker('inspect' + <id>)
+    resp = json.dumps(docker_inspect_to_array(output))
 
     return Response(response=resp, mimetype="application/json")
 
@@ -78,8 +79,7 @@ def containers_log(id):
     Dump specific container logs
 
     """
-    output = docker('logs', id)
-    resp = json.dumps(docker_logs_to_object(id,output))
+    resp = ''
     return Response(response=resp, mimetype="application/json")
 
 
@@ -87,7 +87,6 @@ def containers_log(id):
 def images_remove(id):
     """
     Delete a specific image
-    curl -s -X DELETE -H 'Accept: application/json' http://localhost:8080/images/<id> | python -mjson.tool
     """
     docker ('rmi', id)
     resp = '{"id": "%s"}' % id
@@ -97,20 +96,17 @@ def images_remove(id):
 def containers_remove(id):
     """
     Delete a specific container - must be already stopped/killed
-    curl -s -X DELETE -H 'Accept: application/json' http://localhost:8080/containters/<id> | python -mjson.tool
+
     """
-    docker('rm',id)
-    resp = '{"id":"%s"}' % id
+    resp = ''
     return Response(response=resp, mimetype="application/json")
 
 @app.route('/containers', methods=['DELETE'])
 def containers_remove_all():
     """
     Force remove all containers - dangrous!
-    curl -s -X DELETE -H 'Accept: application/json'/ http://localhost:8080/containers 
+
     """
-    containers = docker('ps','-a','-q')
-    docker('rm',containers)
     resp = ''
     return Response(response=resp, mimetype="application/json")
 
@@ -118,9 +114,9 @@ def containers_remove_all():
 def images_remove_all():
     """
     Force remove all images - dangrous!
-    curl -s -X DELETE 
+
     """
-    docker('rm', '$(docker containers -q)')
+ 
     resp = ''
     return Response(response=resp, mimetype="application/json")
 
